@@ -37,5 +37,17 @@ class HabitTests(unittest.TestCase):
             check([], "swim")
 
 
+class WeeklySummaryTests(unittest.TestCase):
+    def test_weekly_summary_counts_last_seven_days(self):
+        from habits import weekly_summary
+
+        habits = add_habit(add_habit([], "read"), "run")
+        for day in (4, 5, 10, 11):
+            check(habits, "read", date(2026, 11, day))
+        check(habits, "run", date(2026, 11, 11))
+        summary = weekly_summary(habits, date(2026, 11, 11))
+        self.assertEqual(summary, {"read": 3, "run": 1})
+
+
 if __name__ == "__main__":
     unittest.main()
