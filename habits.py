@@ -51,3 +51,13 @@ def streak(habits, name, today=None):
         count += 1
         cursor -= timedelta(days=1)
     return count
+
+
+def weekly_summary(habits, today=None):
+    """Count checks per habit in the seven days ending today."""
+    today = today or date.today()
+    window = {(today - timedelta(days=offset)).isoformat() for offset in range(7)}
+    return {
+        habit["name"]: len(window.intersection(habit["checks"]))
+        for habit in habits
+    }
