@@ -2,13 +2,23 @@
 
 Track daily habits and measure streaks.
 
-## Status
+## Usage
 
-Starter project with a working core module and unit tests.
+```bash
+python3 -c "from datetime import date; from habits import *; h=add_habit([], 'read'); check(h, 'read', date.today()); print(streak(h, 'read'))"
+```
+
+## Features
+
+- Add habits and check them once per day
+- Consecutive-day streak calculation
+- Seven-day summary with weekly_summary(habits)
 
 ## Tests
 
+```bash
 python3 -m unittest -q
+```
 
 ## License
 
