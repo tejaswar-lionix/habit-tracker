@@ -1,7 +1,10 @@
+import csv
+import os
+import tempfile
 import unittest
 from datetime import date
 
-from habits import add_habit, check, streak
+from habits import add_habit, check, export_history, streak
 
 
 class HabitTests(unittest.TestCase):
@@ -35,6 +38,47 @@ class HabitTests(unittest.TestCase):
     def test_unknown_habit_raises(self):
         with self.assertRaises(KeyError):
             check([], "swim")
+
+
+class ExportHistoryTests(unittest.TestCase):
+    def test_rows_written_correctly(self):
+        habits = add_habit([], "read")
+        check(habits, "read", date(2026, 11, 10))
+        with tempfile.TemporaryDirectory() as directory:
+            path = os.path.join(directory, "history.csv")
+            result = export_history(habits, path)
+            with open(path, encoding="utf-8") as handle:
+                rows = list(csv.reader(handle))
+        self.assertEqual(result, path)
+        self.assertEqual(rows, [["habit", "date"], ["read", "2026-11-10"]])
+
+    def test_multiple_habits_and_dates_sorted(self):
+        habits = add_habit(add_habit([], "read"), "run")
+        check(habits, "run", date(2026, 11, 11))
+        check(habits, "read", date(2026, 11, 10))
+        check(habits, "read", date(2026, 11, 11))
+        with tempfile.TemporaryDirectory() as directory:
+            path = os.path.join(directory, "history.csv")
+            export_history(habits, path)
+            with open(path, encoding="utf-8") as handle:
+                rows = list(csv.reader(handle))
+        self.assertEqual(
+            rows,
+            [
+                ["habit", "date"],
+                ["read", "2026-11-10"],
+                ["read", "2026-11-11"],
+                ["run", "2026-11-11"],
+            ],
+        )
+
+    def test_empty_habits_writes_header_only(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = os.path.join(directory, "history.csv")
+            export_history([], path)
+            with open(path, encoding="utf-8") as handle:
+                rows = list(csv.reader(handle))
+        self.assertEqual(rows, [["habit", "date"]])
 
 
 class WeeklySummaryTests(unittest.TestCase):
