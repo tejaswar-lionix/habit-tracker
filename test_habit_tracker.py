@@ -4,7 +4,7 @@ import tempfile
 import unittest
 from datetime import date
 
-from habits import add_habit, check, export_history, streak
+from habits import add_habit, check, export_history, longest_streak, streak
 
 
 class HabitTests(unittest.TestCase):
@@ -38,6 +38,28 @@ class HabitTests(unittest.TestCase):
     def test_unknown_habit_raises(self):
         with self.assertRaises(KeyError):
             check([], "swim")
+
+
+class LongestStreakTests(unittest.TestCase):
+    def test_single_run(self):
+        habits = add_habit([], "read")
+        for day in (8, 9, 10):
+            check(habits, "read", date(2026, 11, day))
+        self.assertEqual(longest_streak(habits, "read"), 3)
+
+    def test_gap_separated_runs_returns_longest(self):
+        habits = add_habit([], "read")
+        for day in (1, 2, 3, 6, 7):
+            check(habits, "read", date(2026, 11, day))
+        self.assertEqual(longest_streak(habits, "read"), 3)
+
+    def test_empty_checks_returns_zero(self):
+        habits = add_habit([], "read")
+        self.assertEqual(longest_streak(habits, "read"), 0)
+
+    def test_unknown_habit_raises(self):
+        with self.assertRaises(KeyError):
+            longest_streak([], "swim")
 
 
 class ExportHistoryTests(unittest.TestCase):

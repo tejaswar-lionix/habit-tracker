@@ -54,6 +54,22 @@ def streak(habits, name, today=None):
     return count
 
 
+def longest_streak(habits, name):
+    habit = _find(habits, name)
+    days = sorted({date.fromisoformat(stamp) for stamp in habit["checks"]})
+    longest = 0
+    current = 0
+    previous = None
+    for day in days:
+        if previous is not None and day - previous == timedelta(days=1):
+            current += 1
+        else:
+            current = 1
+        longest = max(longest, current)
+        previous = day
+    return longest
+
+
 def weekly_summary(habits, today=None):
     """Count checks per habit in the seven days ending today."""
     today = today or date.today()
