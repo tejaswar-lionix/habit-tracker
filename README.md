@@ -6,6 +6,7 @@ Track daily habits and measure streaks.
 
 ```bash
 python3 -c "from datetime import date; from habits import *; h=add_habit([], 'read'); check(h, 'read', date.today()); print(streak(h, 'read'))"
+python3 -c "from habits import *; h=add_habit([], 'read'); print(longest_streak(h, 'read'))"
 python3 -c "from habits import *; export_history(add_habit([], 'read'), 'history.csv')"
 ```
 
@@ -13,6 +14,7 @@ python3 -c "from habits import *; export_history(add_habit([], 'read'), 'history
 
 - Add habits and check them once per day
 - Consecutive-day streak calculation
+- Longest run of consecutive days with longest_streak(habits, name)
 - Seven-day summary with weekly_summary(habits)
 - CSV history export with export_history(habits, path)
 
