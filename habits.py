@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Track simple daily habits and compute streaks."""
+import csv
 import json
 import os
 from datetime import date, timedelta
@@ -61,3 +62,16 @@ def weekly_summary(habits, today=None):
         habit["name"]: len(window.intersection(habit["checks"]))
         for habit in habits
     }
+
+
+def export_history(habits, path):
+    rows = []
+    for habit in habits:
+        for day in habit["checks"]:
+            rows.append((habit["name"], day))
+    rows.sort(key=lambda row: (row[1], row[0]))
+    with open(path, "w", newline="", encoding="utf-8") as handle:
+        writer = csv.writer(handle)
+        writer.writerow(["habit", "date"])
+        writer.writerows(rows)
+    return path
