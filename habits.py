@@ -35,6 +35,12 @@ def _find(habits, name):
     raise KeyError(f"unknown habit: {name}")
 
 
+def remove_habit(habits, name):
+    habit = _find(habits, name)
+    habits.remove(habit)
+    return habits
+
+
 def check(habits, name, day=None):
     habit = _find(habits, name)
     stamp = (day or date.today()).isoformat()
