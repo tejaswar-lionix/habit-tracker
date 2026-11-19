@@ -41,6 +41,17 @@ def remove_habit(habits, name):
     return habits
 
 
+def rename_habit(habits, old, new):
+    new = new.strip()
+    if not new:
+        raise ValueError("habit name must not be empty")
+    habit = _find(habits, old)
+    if new != old and any(other["name"] == new for other in habits):
+        raise ValueError(f"habit already exists: {new}")
+    habit["name"] = new
+    return habits
+
+
 def check(habits, name, day=None):
     habit = _find(habits, name)
     stamp = (day or date.today()).isoformat()

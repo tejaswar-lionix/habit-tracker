@@ -10,6 +10,7 @@ from habits import (
     export_history,
     longest_streak,
     remove_habit,
+    rename_habit,
     streak,
 )
 
@@ -65,6 +66,30 @@ class RemoveHabitTests(unittest.TestCase):
             [(habit["name"], habit["checks"]) for habit in habits],
             [("read", []), ("write", ["2026-11-10"])],
         )
+
+
+class RenameHabitTests(unittest.TestCase):
+    def test_rename_updates_name_and_keeps_checks(self):
+        habits = add_habit(add_habit([], "read"), "run")
+        check(habits, "read", date(2026, 11, 10))
+        result = rename_habit(habits, "read", "study")
+        self.assertEqual([habit["name"] for habit in result], ["study", "run"])
+        self.assertEqual(habits[0]["checks"], ["2026-11-10"])
+
+    def test_rename_unknown_habit_raises(self):
+        with self.assertRaises(KeyError):
+            rename_habit(add_habit([], "read"), "swim", "study")
+
+    def test_rename_to_existing_name_raises(self):
+        habits = add_habit(add_habit([], "read"), "run")
+        with self.assertRaises(ValueError):
+            rename_habit(habits, "read", "run")
+        self.assertEqual([habit["name"] for habit in habits], ["read", "run"])
+
+    def test_rename_rejects_blank_name(self):
+        habits = add_habit([], "read")
+        with self.assertRaises(ValueError):
+            rename_habit(habits, "read", "   ")
 
 
 class LongestStreakTests(unittest.TestCase):
