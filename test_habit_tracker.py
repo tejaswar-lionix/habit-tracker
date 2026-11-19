@@ -167,5 +167,24 @@ class WeeklySummaryTests(unittest.TestCase):
         self.assertEqual(summary, {"read": 3, "run": 1})
 
 
+class CompletionRateTests(unittest.TestCase):
+    def test_rate_over_window(self):
+        from datetime import date
+
+        from habits import add_habit, check, completion_rate
+
+        habits = add_habit([], "run")
+        for day in ("2026-11-10", "2026-11-11", "2026-11-12"):
+            check(habits, "run", date.fromisoformat(day))
+        rate = completion_rate(habits, "run", days=7, today=date(2026, 11, 16))
+        self.assertEqual(rate, 42.9)
+
+    def test_rejects_bad_window(self):
+        from habits import add_habit, completion_rate
+
+        with self.assertRaises(ValueError):
+            completion_rate(add_habit([], "run"), "run", days=0)
+
+
 if __name__ == "__main__":
     unittest.main()
