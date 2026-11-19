@@ -15,6 +15,7 @@ python3 -c "from habits import *; export_history(add_habit([], 'read'), 'history
 
 - Add habits and check them once per day
 - Remove habits by name with remove_habit(habits, name)
+- Rename habits in place with rename_habit(habits, old, new)
 - Consecutive-day streak calculation
 - Longest run of consecutive days with longest_streak(habits, name)
 - Seven-day summary with weekly_summary(habits)
