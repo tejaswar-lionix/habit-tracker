@@ -108,3 +108,14 @@ def export_history(habits, path):
         writer.writerow(["habit", "date"])
         writer.writerows(rows)
     return path
+
+
+def completion_rate(habits, name, days=7, today=None):
+    """Return the percentage of the last days in which a habit was checked."""
+    if days < 1:
+        raise ValueError("days must be at least 1")
+    habit = _find(habits, name)
+    today = today or date.today()
+    window = {(today - timedelta(days=offset)).isoformat() for offset in range(days)}
+    checked = window.intersection(habit["checks"])
+    return round(len(checked) / days * 100, 1)

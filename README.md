@@ -27,6 +27,10 @@ python3 -c "from habits import *; export_history(add_habit([], 'read'), 'history
 python3 -m unittest -q
 ```
 
+## Additional API
+
+- `completion_rate(habits, name, days=7, today=None)` returns the checked-day percentage for a window.
+
 ## License
 
 MIT
